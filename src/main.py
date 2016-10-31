@@ -4,8 +4,6 @@ import time
 import cwiid
 from wiimote import Wiimote
 
-
-
 if __name__ == '__main__':
     wiimote = Wiimote()
 
