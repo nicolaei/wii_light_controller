@@ -29,7 +29,7 @@ class Wiimote:
 
     def get_accelerometer(self):
         # cwiid returns an 8-bit value for the accelometer
-        zero = 127
+        zero = 128
         scale = 255
 
         return (
@@ -59,3 +59,7 @@ class Wiimote:
             return pitch
         except ZeroDivisionError:
             return 0
+
+    def get_acceleration(self):
+        x, y, z = self.get_accelerometer()
+        return math.sqrt(x**2 + y**2 + z**2)
