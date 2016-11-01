@@ -1,6 +1,7 @@
 import math
 import cwiid
 
+
 class Wiimote:
     _wiimote = None
 
@@ -21,6 +22,7 @@ class Wiimote:
         rpt_mode = 0
         rpt_mode ^= cwiid.RPT_ACC  # Turn on accelerometer
         rpt_mode ^= cwiid.RPT_BTN  # Turn on buttons
+        rpt_mode ^= cwiid.RPT_IR   # Turn on the IR sensor
 
         self._wiimote.rpt_mode = rpt_mode
 
@@ -38,7 +40,21 @@ class Wiimote:
             float(self._wiimote.state['acc'][cwiid.Z] - zero) / scale,
         )
 
+    def get_pos(self):
+        """
+        Returns value of the first sensor
+        :return: X, Y coordinates relative to IR transmitter
+        """
+        source = self._wiimote.state['ir_src'][0]
+
+        if source:
+            return source['pos']
+        return None
+
     def get_roll(self):
+        """
+        :return: roll in radians
+        """
         x, y, z = self.get_accelerometer()
 
         try:
@@ -46,11 +62,14 @@ class Wiimote:
             if z <= 0:
                 roll += math.pi * (1 if x > 0 else -1)
 
-            return -roll
+            return roll
         except ZeroDivisionError:
             return 0
 
     def get_pitch(self):
+        """
+        :return: pitch with max of +- pi / 2
+        """
         x, y, z = self.get_accelerometer()
         roll = self.get_roll()
 
@@ -62,4 +81,4 @@ class Wiimote:
 
     def get_acceleration(self):
         x, y, z = self.get_accelerometer()
-        return math.sqrt(x**2 + y**2 + z**2)
+        return math.sqrt(x ** 2 + y ** 2 + z ** 2)

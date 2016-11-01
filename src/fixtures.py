@@ -3,19 +3,17 @@ class _Fixture(object):
         self.start_address = start_address
         self.data = [i for i in range(end_address - start_address)]
 
+    def set_intensity(self, values):
+        return
 
-class PixelBar(_Fixture):
+
+class LED(_Fixture):
     """
     3 Channel mode:
         1: R
         2: G
         3: B
     """
-    def set_red(self, value):
-        self.data[0] = value
 
-    def set_green(self, value):
-        self.data[1] = value
-
-    def set_blue(self, value):
-        self.data[2] = value
+    def set_intensity(self, values):
+        self.data = values
