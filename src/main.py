@@ -17,13 +17,14 @@ def get_colors():
     """
     roll = wiimote.get_roll()
 
-    # TODO: Fix overlap
-    color_range = math.pi / 3
-    red = max(0, math.cos(roll * color_range))
-    green = max(0, math.sin(roll * color_range))
-    blue = max(0, -math.cos(roll * color_range))
+    color_range = math.pi / 3.0
+    offset = color_range / 2
+    # sin(x * (pi/3) + (pi/3 * 2i)) + (pi/6)
+    red = min(1.0, max(0.0, math.sin(roll * color_range) + offset))
+    green = min(1.0, max(0.0, math.sin(roll * color_range + 2 * color_range) + offset))
+    blue = min(1.0, max(0.0, math.sin(roll * color_range + 4 * color_range) + offset))
 
-    # print "Colors: %.2f %.2f %.2f" % (red, green, blue)
+    print "Roll: %4.2f Colors: %.2f %.2f %.2f" % (roll, red, green, blue)
 
     return red, green, blue
 
@@ -50,7 +51,7 @@ def set_color(values):
         if x >= light_range * i and x < light_range * i + light_range:
             light_index = i
 
-    print "%d %4d" % (light_index, x)
+    #print "%d %4d" % (light_index, x)
 
     # Assign light value with falloff
     for i in xrange(falloff):
