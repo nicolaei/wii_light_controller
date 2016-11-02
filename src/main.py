@@ -1,9 +1,6 @@
 #!/usr/bin/env python2
-import time
-
-import cwiid
-
 import math
+import sys
 
 from fixtures import LED
 from wiimote import Wiimote
@@ -24,8 +21,6 @@ def get_colors():
     green = min(1.0, max(0.0, math.sin(roll * color_range + 2 * color_range) + offset))
     blue = min(1.0, max(0.0, math.sin(roll * color_range + 4 * color_range) + offset))
 
-    print "Roll: %4.2f Colors: %.2f %.2f %.2f" % (roll, red, green, blue)
-
     return red, green, blue
 
 
@@ -37,29 +32,33 @@ def get_dim():
 
 
 def set_color(values):
-    light_range = 1000 / len(lights)  # The pos of the wii-mote is 0 to 1000
+    light_range = 1024 / len(lights)  # The pos of the wii-mote is 0 to 1024
     falloff = 6
 
     try:
         x = wiimote.get_pos()[0]
     except TypeError:
-        # The controller has no IR sensor
+        # The controller is not receiving an IR signal
         x = 0
     light_index = 0
 
     for i in xrange(len(lights)):
-        if x >= light_range * i and x < light_range * i + light_range:
+        if light_range * i <= x < light_range * i + light_range:
             light_index = i
 
-    #print "%d %4d" % (light_index, x)
+    print "%4d %2d" % (x, light_index)
 
     # Assign light value with falloff
     for i in xrange(falloff):
         if i is 0:
             lights[light_index].set_intensity([(value * 255) for value in values])
         else:
-            lights[min(light_index + i, len(lights) - 1)].set_intensity([(value / i * 255) for value in values])
-            lights[max(light_index - i, 0)].set_intensity([(value / i * 255) for value in values])
+            right = min(light_index + i, len(lights) - 1)
+            left = max(light_index - i, 0)
+            falloff_values = [(value / i * 255) for value in values]
+
+            lights[right].set_intensity(falloff_values)
+            lights[left].set_intensity(falloff_values)
 
 
 def main_loop():
@@ -71,18 +70,18 @@ def main_loop():
     set_color([(color * dim_modifier) for color in colors])
 
 
-if __name__ == '__main__':
-    wiimote = Wiimote()
+def init_lights(amount):
+    for i in xrange(amount):
+        lights.append(LED(i * 4, i * 4 + 3))
 
-    print wiimote._wiimote.state
-    # tmp for testing
-    lights = [LED(1, 4), LED(1, 4), LED(1, 4), LED(1, 4), LED(1, 4), LED(1, 4), LED(1, 4), LED(1, 4)]
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print "Usage: main.py <amount of lights>"
+        sys.exit(1)
+
+    wiimote = Wiimote()
+    init_lights(int(sys.argv[1]))
 
     while True:
         main_loop()
-        # Debug info
-        # print "Red: %3d Green: %3d Blue: %3d" % (lights[0].data[0], lights[0].data[1], lights[0].data[2])
-        time.sleep(0.2)
-
-    wiimote.close()
-
