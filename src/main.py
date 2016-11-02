@@ -53,12 +53,12 @@ def set_color(values):
         if i is 0:
             lights[light_index].set_intensity([(value * 255) for value in values])
         else:
-            right = min(light_index + i, len(lights) - 1)
-            left = max(light_index - i, 0)
             falloff_values = [(value / i * 255) for value in values]
 
-            lights[right].set_intensity(falloff_values)
-            lights[left].set_intensity(falloff_values)
+            if light_index + i < len(lights):
+                lights[light_index + i].set_intensity(falloff_values)
+            elif light_index - i >= 0:
+                lights[light_index - i].set_intensity(falloff_values)
 
 
 def main_loop():
