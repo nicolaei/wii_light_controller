@@ -17,14 +17,14 @@ This is a python thingy created to show at expos for the University of Oslo.
 
 ## Dependencies
 ### Hardware
-Open Lighting Architecture supported DMX device
-Wii-mote
-Bluetooth dongle
+* Open Lighting Architecture supported DMX device
+* Wii-mote
+* Bluetooth dongle
 
 ### Software
-Python 2.7
-cwiid (`apt-get install libcwiid1 lswm wminput`)
-ola (open lighting architecture)
+* Python 2.7
+* cwiid (`apt-get install libcwiid1 lswm wminput`)
+* ola (open lighting architecture)
 
 
 ## Helpfull pages
