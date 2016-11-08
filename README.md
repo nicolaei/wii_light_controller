@@ -29,5 +29,7 @@ ola (open lighting architecture)
 
 ## Helpfull pages
 Running stuff - http://www.raspberrypi-dmx.com/raspberry-pi-ola-dmx512-sender
+
 Pre-compiled OLA Raspbian image - http://dl.openlighting.org/
+
 Creating your own OLA Raspbian image - https://wiki.openlighting.org/index.php/Building_a_Custom_Raspbian_Image
