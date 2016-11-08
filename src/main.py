@@ -2,6 +2,7 @@
 import math
 import sys
 
+from dmx import send_dmx, change_data
 from fixtures import LED
 from wiimote import Wiimote
 
@@ -46,7 +47,9 @@ def set_color(values):
         if light_range * i <= x < light_range * i + light_range:
             light_index = i
 
-    print "%4d %2d" % (x, light_index)
+    # Reset the lights
+    for light in lights:
+        light.set_intensity([0] * 3)
 
     # Assign light value with falloff
     for i in xrange(falloff):
@@ -68,6 +71,11 @@ def main_loop():
     dim_modifier = get_dim()
 
     set_color([(color * dim_modifier) for color in colors])
+
+    # Snd data to dmx
+    for light in lights:
+        change_data(light.start_address, light.data)
+    send_dmx()
 
 
 def init_lights(amount):

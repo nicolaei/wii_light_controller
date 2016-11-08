@@ -29,6 +29,12 @@ class Wiimote:
     def close(self):
         self._wiimote.close()
 
+    def get_buttons(self):
+        return self._wiimote.state['buttons']
+
+    def is_a_pressed(self):
+        return self.get_buttons() == cwiid.BTN_A
+
     def get_accelerometer(self):
         # cwiid returns an 8-bit value for the accelometer
         zero = 128
